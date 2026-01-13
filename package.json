@@ -1,0 +1,40 @@
+{
+  "name": "stlcpp",
+  "displayName": "STLC++",
+  "description": "Syntax highlighting for the STLC++ language",
+  "version": "0.0.1",
+  "publisher": "stlcpp",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aalto-opencs/tree-sitter-stlcpp"
+  },
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "stlcpp",
+        "aliases": [
+          "STLC++",
+          "stlcpp"
+        ],
+        "extensions": [
+          ".stlc"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "stlcpp",
+        "scopeName": "source.stlcpp",
+        "path": "./syntaxes/stlcpp.tmLanguage.json"
+      }
+    ]
+  }
+}
