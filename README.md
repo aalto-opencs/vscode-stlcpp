@@ -19,7 +19,7 @@ Tree-sitter based syntax highlighting for the STLC++ language.
 1. Download the `.vsix` file from the [Releases](../../releases) page
 2. Install in VSCode:
    ```bash
-   code --install-extension stlcpp-0.0.2.vsix
+   code --install-extension stlcpp-*.vsix
    ```
 
 ### From Source
@@ -30,7 +30,7 @@ cd vscode-stlcpp
 npm install
 npm run compile
 npx vsce package
-code --install-extension stlcpp-0.0.2.vsix
+code --install-extension stlcpp-*.vsix
 ```
 
 ## Supported Syntax

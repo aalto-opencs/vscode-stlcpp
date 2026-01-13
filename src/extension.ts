@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
-import Parser from 'web-tree-sitter';
+import { Parser, Language, Node } from 'web-tree-sitter';
 
 // Token types that VSCode supports
 const tokenTypes = [
@@ -99,7 +99,7 @@ function shouldHighlight(nodeType: string): boolean {
 
 class StlcppSemanticTokensProvider implements vscode.DocumentSemanticTokensProvider {
     private parser: Parser | null = null;
-    private language: Parser.Language | null = null;
+    private language: Language | null = null;
 
     constructor(private extensionPath: string) {}
 
@@ -108,7 +108,7 @@ class StlcppSemanticTokensProvider implements vscode.DocumentSemanticTokensProvi
         this.parser = new Parser();
 
         const wasmPath = path.join(this.extensionPath, 'wasm', 'tree-sitter-stlcpp.wasm');
-        this.language = await Parser.Language.load(wasmPath);
+        this.language = await Language.load(wasmPath);
         this.parser.setLanguage(this.language);
     }
 
@@ -122,10 +122,15 @@ class StlcppSemanticTokensProvider implements vscode.DocumentSemanticTokensProvi
 
         const text = document.getText();
         const tree = this.parser.parse(text);
+
+        if (!tree) {
+            return null;
+        }
+
         const builder = new vscode.SemanticTokensBuilder(legend);
 
         // Traverse the tree and collect tokens
-        const traverse = (node: Parser.SyntaxNode) => {
+        const traverse = (node: Node) => {
             const tokenType = getTokenType(node.type);
 
             if (tokenType !== undefined && node.childCount === 0) {

@@ -2,6 +2,7 @@
 .vscode/**
 src/**
 node_modules/**
+!node_modules/web-tree-sitter/**
 tsconfig.json
 **/*.map
 **/*.ts
