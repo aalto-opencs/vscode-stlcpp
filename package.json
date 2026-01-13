@@ -1,19 +1,23 @@
 {
   "name": "stlcpp",
   "displayName": "STLC++",
-  "description": "Syntax highlighting for the STLC++ language",
-  "version": "0.0.1",
+  "description": "Tree-sitter based syntax highlighting for the STLC++ language",
+  "version": "0.0.2",
   "publisher": "stlcpp",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/aalto-opencs/tree-sitter-stlcpp"
+    "url": "https://github.com/aalto-opencs/vscode-stlcpp"
   },
   "engines": {
     "vscode": "^1.75.0"
   },
   "categories": [
     "Programming Languages"
+  ],
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "onLanguage:stlcpp"
   ],
   "contributes": {
     "languages": [
@@ -29,12 +33,34 @@
         "configuration": "./language-configuration.json"
       }
     ],
-    "grammars": [
+    "semanticTokenTypes": [
+      {
+        "id": "boolean",
+        "description": "Boolean literals"
+      }
+    ],
+    "semanticTokenScopes": [
       {
         "language": "stlcpp",
-        "scopeName": "source.stlcpp",
-        "path": "./syntaxes/stlcpp.tmLanguage.json"
+        "scopes": {
+          "boolean": ["constant.language.boolean"]
+        }
       }
     ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.75.0",
+    "@vscode/vsce": "^2.22.0",
+    "typescript": "^5.3.0"
+  },
+  "dependencies": {
+    "web-tree-sitter": "^0.24.0"
   }
 }

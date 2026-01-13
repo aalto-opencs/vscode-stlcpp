@@ -1,12 +1,37 @@
 # STLC++ for Visual Studio Code
 
-Syntax highlighting support for the STLC++ language.
+## TODOs
+
+- Build with Nix and don't include the wasm file as a binary
+
+Tree-sitter based syntax highlighting for the STLC++ language.
 
 ## Features
 
-- Syntax highlighting for `.stlc` files
+- Syntax highlighting for `.stlc` files using tree-sitter
 - Bracket matching and auto-closing
 - Comment toggling with `Ctrl+/` (or `Cmd+/` on macOS)
+
+## Installation
+
+### From GitHub Release
+
+1. Download the `.vsix` file from the [Releases](../../releases) page
+2. Install in VSCode:
+   ```bash
+   code --install-extension stlcpp-0.0.2.vsix
+   ```
+
+### From Source
+
+```bash
+git clone <repo-url>
+cd vscode-stlcpp
+npm install
+npm run compile
+npx vsce package
+code --install-extension stlcpp-0.0.2.vsix
+```
 
 ## Supported Syntax
 
@@ -22,60 +47,6 @@ Syntax highlighting support for the STLC++ language.
 - String and character literals with escape sequences
 - Comments: `// ...`
 - Operators: `->`, `=>`, `==`, custom operators
-
-## Installation
-
-### From Source
-
-1. Clone or download this extension folder
-2. Copy the `vscode-stlcpp` folder to your VSCode extensions directory:
-   - **Linux**: `~/.vscode/extensions/`
-   - **macOS**: `~/.vscode/extensions/`
-   - **Windows**: `%USERPROFILE%\.vscode\extensions\`
-3. Restart VSCode
-
-### Using vsce (for development)
-
-```bash
-cd vscode-stlcpp
-npm install -g @vscode/vsce
-vsce package
-code --install-extension stlcpp-0.0.1.vsix
-```
-
-## Publishing (for maintainers)
-
-The extension is automatically built and published via GitHub Actions when a version tag is pushed.
-
-### Setup
-
-1. Create a Personal Access Token (PAT) for the VS Code Marketplace:
-   - Go to [Azure DevOps](https://dev.azure.com/)
-   - Create an organization (or use an existing one)
-   - Go to User Settings > Personal Access Tokens
-   - Create a new token with **Marketplace (Manage)** scope
-   - Add the token as a repository secret named `VSCE_PAT`
-
-2. (Optional) For Open VSX Registry:
-   - Go to [Open VSX](https://open-vsx.org/)
-   - Create an access token
-   - Add it as a repository secret named `OVSX_PAT`
-
-### Release Process
-
-1. Update the version in `package.json`
-2. Commit the change
-3. Create and push a version tag:
-   ```bash
-   git tag v0.0.1
-   git push origin v0.0.1
-   ```
-
-The workflow will automatically:
-- Build and package the extension
-- Publish to VS Code Marketplace
-- Publish to Open VSX Registry (if configured)
-- Create a GitHub Release with the VSIX file attached
 
 ## Related
 

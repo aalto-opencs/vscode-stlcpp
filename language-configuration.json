@@ -21,15 +21,5 @@
     ["\"", "\""],
     ["'", "'"]
   ],
-  "folding": {
-    "markers": {
-      "start": "^\\s*//\\s*#?region\\b",
-      "end": "^\\s*//\\s*#?endregion\\b"
-    }
-  },
-  "wordPattern": "[a-zA-Z][A-Za-z0-9._']*|[<>|&!@#$%^~?`=+\\-*/]+",
-  "indentationRules": {
-    "increaseIndentPattern": "^.*\\b(fun|if|then|else|let|case|lcase|of)\\b.*$",
-    "decreaseIndentPattern": "^\\s*\\|.*$"
-  }
+  "wordPattern": "[a-zA-Z][A-Za-z0-9._']*|[<>|&!@#$%^~?`=+\\-*/]+"
 }
