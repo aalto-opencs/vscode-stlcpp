@@ -51,7 +51,3 @@ code --install-extension stlcpp-*.vsix
 ## Related
 
 - [tree-sitter-stlcpp](https://github.com/aalto-opencs/tree-sitter-stlcpp) - Tree-sitter grammar for STLC++
-
-## License
-
-MIT
