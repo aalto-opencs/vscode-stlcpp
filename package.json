@@ -2,8 +2,8 @@
   "name": "stlcpp",
   "displayName": "STLC++",
   "description": "Tree-sitter based syntax highlighting for the STLC++ language",
-  "version": "0.0.3",
-  "publisher": "stlcpp",
+  "version": "0.1.0",
+  "publisher": "aalto-opencs",
   "license": "MIT",
   "repository": {
     "type": "git",
