@@ -43,7 +43,9 @@
       {
         "language": "stlcpp",
         "scopes": {
-          "boolean": ["constant.language.boolean"]
+          "boolean": [
+            "constant.language.boolean"
+          ]
         }
       }
     ]
@@ -52,12 +54,13 @@
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "package": "vsce package"
+    "package": "vsce package",
+    "test:dependencies": "node --test tests/dependencies/*.test.cjs"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
     "@types/vscode": "^1.75.0",
-    "@vscode/vsce": "^2.22.0",
+    "@vscode/vsce": "^4.0.0",
     "typescript": "^5.3.0"
   },
   "dependencies": {

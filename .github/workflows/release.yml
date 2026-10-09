@@ -18,7 +18,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
 
       - name: Install dependencies
         run: npm ci
@@ -26,11 +26,11 @@ jobs:
       - name: Compile TypeScript
         run: npm run compile
 
-      - name: Install vsce
-        run: npm install -g @vscode/vsce
+      - name: Test dependency and packaging contracts
+        run: npm run test:dependencies
 
       - name: Package extension
-        run: vsce package
+        run: npm run package
 
       - name: Upload VSIX artifact
         uses: actions/upload-artifact@v4
