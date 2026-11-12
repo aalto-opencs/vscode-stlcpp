@@ -35,7 +35,7 @@ test('the locked vsce packages a loadable extension without source or test files
     assert.deepEqual(files.get('extension/wasm/tree-sitter-stlcpp.wasm'), readFileSync('wasm/tree-sitter-stlcpp.wasm'));
     assert.ok(files.has('extension/README.md') || files.has('extension/readme.md'));
     for (const name of files.keys()) {
-      assert.doesNotMatch(name, /^extension\/(?:src|tests|\.github)\//);
+      assert.doesNotMatch(name, /^extension\/(?:src|tests|scripts|docs|\.github|\.vscode-test)\//);
       assert.doesNotMatch(name, /^extension\/node_modules\/@vscode\/vsce\//);
     }
   } finally {

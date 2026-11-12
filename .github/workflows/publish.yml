@@ -21,6 +21,8 @@ jobs:
     timeout-minutes: 20
     outputs:
       publish: ${{ steps.release.outputs.publish }}
+      vscode-version: ${{ steps.vscode.outputs.version }}
+      vscode-minimum: ${{ steps.vscode.outputs.minimum }}
     steps:
       - name: Check out repository and release history
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -55,6 +57,11 @@ jobs:
       - name: Compile TypeScript
         run: npm run compile
 
+      - name: Read supported VS Code test versions
+        id: vscode
+        run: |
+          node -e 'const p = require("./package.json"); console.log(`version=${p.config.vscodeTestVersion}`); console.log(`minimum=${p.engines.vscode.replace(/^\^/, "")}`)' >> "$GITHUB_OUTPUT"
+
       - name: Test dependency and packaging contracts
         run: npm run test:dependencies
 
@@ -70,6 +77,58 @@ jobs:
             release-notes.md
           if-no-files-found: error
           retention-days: 30
+
+  editor-tests:
+    name: Editor tests on ${{ matrix.os }} (VS Code ${{ matrix.vscode }})
+    needs: build
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        vscode: ['${{ needs.build.outputs.vscode-version }}']
+        include:
+          - os: ubuntu-latest
+            vscode: ${{ needs.build.outputs.vscode-minimum }}
+    steps:
+      - name: Check out tests
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Install test tools
+        run: npm ci
+
+      - name: Download the built VSIX
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: stlcpp-vsix
+          path: artifacts
+
+      - name: Test the installed VSIX on Linux
+        if: runner.os == 'Linux'
+        run: xvfb-run -a npm run test:extension -- --vsix artifacts/extension.vsix --version ${{ matrix.vscode }}
+
+      - name: Test the installed VSIX on macOS and Windows
+        if: runner.os != 'Linux'
+        run: npm run test:extension -- --vsix artifacts/extension.vsix --version ${{ matrix.vscode }}
+
+      - name: Upload VS Code logs on failure
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: editor-test-logs-${{ matrix.os }}-${{ matrix.vscode }}
+          path: .vscode-test/run-*/user-data/logs/
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 7
 
   publish:
     name: Publish to ${{ matrix.registry }}
@@ -118,7 +177,7 @@ jobs:
 
   release:
     name: Create GitHub Release
-    needs: build
+    needs: [build, editor-tests]
     if: >-
       github.repository == 'aalto-opencs/vscode-stlcpp' &&
       needs.build.outputs.publish == 'true'

@@ -82,14 +82,19 @@ A local tag alone does not start GitHub Actions; pushing it starts this sequence
    package is not a preview, and the commit belongs to `main`.
 2. Extract the matching changelog section, run the tests and build the VSIX.
    Missing, duplicate or empty changelog entries fail the build.
-3. Create the GitHub Release for the tag, using the extracted changelog and
+3. Install that VSIX in isolated VS Code profiles and run editor tests on Linux,
+   macOS and Windows, plus the declared minimum VS Code version on Linux.
+4. Create the GitHub Release for the tag, using the extracted changelog and
    attaching the tested VSIX.
-4. After the GitHub Release succeeds, upload that same VSIX to Visual Studio
+5. After the GitHub Release succeeds, upload that same VSIX to Visual Studio
    Marketplace and Open VSX in separate jobs. A failed validation, test, build
    or GitHub Release prevents both marketplace jobs from running.
 
 The release build compiles TypeScript, runs the dependency and packaging tests,
-and packages the extension with its `web-tree-sitter` runtime dependency.
+and packages the extension with its `web-tree-sitter` runtime dependency. The
+editor-test matrix consumes this artifact without rebuilding it and verifies
+activation, highlighting, editing, comments and brackets in real VS Code hosts.
+A failed editor test blocks both the GitHub Release and marketplace publication.
 
 The **stlcpp-vsix** artifact contains `extension.vsix` and `release-notes.md`.
 The GitHub Release and both marketplaces use this build's artifact without
@@ -123,6 +128,9 @@ node --test tests/release/*.test.mjs
 node scripts/release-notes.mjs
 ```
 
-Run `npm ci`, `npm run test:dependencies`, and `npm run package` to create the VSIX locally.
+Run `npm ci` and `npm test` for release, packaging and installed-extension editor
+checks. On headless Linux, use `xvfb-run -a npm test`. To test an already built VSIX,
+run `npm run test:extension -- --vsix extension.vsix`; add `--version 1.75.0` for the
+minimum supported editor. `npm run package` creates a VSIX for manual installation.
 These local checks do not publish. Live OIDC authentication is exercised by the
 new-tag release workflow after the registry policies are configured.
