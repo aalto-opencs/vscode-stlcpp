@@ -2,17 +2,11 @@ name: Build and publish
 
 on:
   push:
-    branches: [main, master]
+    branches: [main]
     tags: ['v*']
   pull_request:
-    branches: [main, master]
+    branches: [main]
   workflow_dispatch:
-    inputs:
-      publish:
-        description: 'Publish to both marketplaces (requires a version tag ref)'
-        type: boolean
-        required: false
-        default: false
 
 permissions:
   contents: read
@@ -42,17 +36,18 @@ jobs:
 
       - name: Check release tag, version, and main branch
         id: release
-        if: >-
-          (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')) ||
-          (github.event_name == 'workflow_dispatch' && inputs.publish)
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
         env:
-          PUBLISH_REQUESTED: ${{ inputs.publish }}
+          TAG_CREATED: ${{ github.event.created }}
         run: |
           node scripts/check-release.mjs
           echo "publish=true" >> "$GITHUB_OUTPUT"
 
       - name: Test release safeguards
         run: node --test tests/release/*.test.mjs
+
+      - name: Prepare release changelog
+        run: node scripts/release-notes.mjs > release-notes.md
 
       - name: Install dependencies
         run: npm ci
@@ -70,13 +65,15 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: stlcpp-vsix
-          path: extension.vsix
+          path: |
+            extension.vsix
+            release-notes.md
           if-no-files-found: error
           retention-days: 30
 
   publish:
     name: Publish to ${{ matrix.registry }}
-    needs: build
+    needs: [build, release]
     if: >-
       github.repository == 'aalto-opencs/vscode-stlcpp' &&
       needs.build.outputs.publish == 'true'
@@ -105,7 +102,7 @@ jobs:
       - name: Install locked tools without lifecycle scripts
         run: npm ci --ignore-scripts
 
-      - name: Download the tested VSIX
+      - name: Download the tested VSIX and changelog
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: stlcpp-vsix
@@ -130,14 +127,15 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Download the tested VSIX
+      - name: Download the tested VSIX and changelog
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: stlcpp-vsix
 
-      - name: Create GitHub Release
+      - name: Create GitHub Release with changelog and VSIX
         uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
         with:
           files: extension.vsix
           fail_on_unmatched_files: true
-          generate_release_notes: true
+          name: STLC++ ${{ github.ref_name }}
+          body_path: release-notes.md
