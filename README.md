@@ -50,6 +50,17 @@ code --install-extension stlcpp-*.vsix
 - Comments: `// ...`
 - Operators: `->`, `=>`, `==`, custom operators
 
+## Releases
+
+Merge the version update in `package.json` and `package-lock.json` into `main`,
+then push the matching `vMAJOR.MINOR.PATCH` tag. GitHub Actions runs the release
+checks and packaging tests, builds the VSIX, and publishes that same package to
+**Visual Studio Marketplace and Open VSX** automatically after the build succeeds.
+The VSIX is also attached to the GitHub Release.
+
+The [publishing guide](docs/publishing.md) explains the one-time trusted-publisher
+setup, tag commands, manual publication, and retrying a failed marketplace job.
+
 ## Related
 
 - [tree-sitter-stlcpp](https://github.com/aalto-opencs/tree-sitter-stlcpp) - Tree-sitter grammar for STLC++
