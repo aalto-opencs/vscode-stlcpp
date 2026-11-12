@@ -2,7 +2,7 @@
   "name": "stlcpp",
   "displayName": "STLC++",
   "description": "Tree-sitter based syntax highlighting for the STLC++ language",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "aalto-opencs",
   "icon": "media/opencs-icon.png",
   "galleryBanner": {
