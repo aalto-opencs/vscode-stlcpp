@@ -50,6 +50,7 @@ code --install-extension stlcpp-*.vsix
 
 ## Related
 
+- [Publishing releases](docs/publishing.md) - GitHub Actions and marketplace setup
 - [tree-sitter-stlcpp](https://github.com/aalto-opencs/tree-sitter-stlcpp) - Tree-sitter grammar for STLC++
 
 ## Licensing and contributions
