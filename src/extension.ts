@@ -83,6 +83,7 @@ function getTokenType(nodeType: string): number | undefined {
 
         // Types
         'type_identifier': 5,
+        'type_primary': 5,
 
         // Variables/identifiers
         'term_identifier': 6,
@@ -131,22 +132,29 @@ class StlcppSemanticTokensProvider implements vscode.DocumentSemanticTokensProvi
 
         // Traverse the tree and collect tokens
         const traverse = (node: Node) => {
-            const tokenType = getTokenType(node.type);
+            // The bundled grammar parses some reserved words (fst, snd, cons,
+            // fix) as identifiers in expressions. Preserve their keyword color
+            // without matching identifier prefixes such as "first" or "fixed".
+            const keywordType = node.type === 'term_identifier'
+                ? getTokenType(`kw_${node.text}`)
+                : undefined;
+            const tokenType = keywordType ?? getTokenType(node.type);
 
-            if (tokenType !== undefined && node.childCount === 0) {
-                // Only highlight leaf nodes
+            if (tokenType !== undefined && node.childCount === 0 && node.endIndex > node.startIndex) {
+                // Missing syntax can produce zero-width leaves while typing;
+                // VS Code semantic tokens must have a positive length.
                 const startPos = document.positionAt(node.startIndex);
                 const endPos = document.positionAt(node.endIndex);
 
-                // Handle multi-line tokens
-                if (startPos.line === endPos.line) {
-                    builder.push(
-                        startPos.line,
-                        startPos.character,
-                        node.endIndex - node.startIndex,
-                        tokenType,
-                        0
-                    );
+                // Split multiline strings and exclude CR/LF from token lengths.
+                for (let line = startPos.line; line <= endPos.line; line++) {
+                    const start = line === startPos.line ? startPos.character : 0;
+                    const end = line === endPos.line
+                        ? endPos.character
+                        : document.lineAt(line).text.length;
+                    if (end > start) {
+                        builder.push(line, start, end - start, tokenType, 0);
+                    }
                 }
             }
 

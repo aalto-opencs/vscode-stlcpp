@@ -60,11 +60,18 @@
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "package": "vsce package",
+    "test": "npm run test:release && npm run test:dependencies && npm run test:extension",
+    "test:release": "node --test tests/release/*.test.mjs",
+    "test:extension": "node scripts/test-extension.mjs",
     "test:dependencies": "node --test tests/dependencies/*.test.cjs"
+  },
+  "config": {
+    "vscodeTestVersion": "1.130.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
     "@types/vscode": "^1.75.0",
+    "@vscode/test-electron": "3.0.0",
     "@vscode/vsce": "4.1.0",
     "ovsx": "1.4.0",
     "typescript": "^5.3.0"

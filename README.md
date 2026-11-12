@@ -50,6 +50,36 @@ code --install-extension stlcpp-*.vsix
 - Comments: `// ...`
 - Operators: `->`, `=>`, `==`, custom operators
 
+## Testing
+
+```sh
+npm ci
+npm test
+```
+
+`npm test` runs the release safeguards, dependency/packaging checks, and editor
+tests. The editor tests build a VSIX, install it in an isolated VS Code profile,
+and exercise the packaged extension: automatic `.stlc` activation, WASM loading,
+syntax highlighting, Unicode positions, edits, incomplete files, comment toggling,
+bracket matching and automatic closing. Your normal editor profile is not used.
+
+VS Code is downloaded to `.vscode-test/` on the first run. Linux needs a display;
+on a headless machine use `xvfb-run -a npm test`.
+
+To test an existing artifact without rebuilding it:
+
+```sh
+npm run test:extension -- --vsix extension.vsix
+```
+
+The current test version is pinned in `package.json` under `config.vscodeTestVersion`.
+Use `--version 1.75.0` to check the declared minimum supported VS Code release.
+Failed runs retain their temporary profiles at the path printed by the runner and
+copy available VS Code logs into `.vscode-test/run-*/`.
+CI tests the same built VSIX on Linux, macOS and Windows, plus the minimum VS Code
+release on Linux. All editor checks must pass before a GitHub Release or marketplace
+upload can start.
+
 ## Releases
 
 Publishing starts only when a **new `vMAJOR.MINOR.PATCH` tag is pushed**. A maintainer
