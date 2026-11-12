@@ -4,6 +4,11 @@
   "description": "Tree-sitter based syntax highlighting for the STLC++ language",
   "version": "0.1.0",
   "publisher": "aalto-opencs",
+  "icon": "media/opencs-icon.png",
+  "galleryBanner": {
+    "color": "#0B0B0C",
+    "theme": "dark"
+  },
   "license": "MIT",
   "repository": {
     "type": "git",
