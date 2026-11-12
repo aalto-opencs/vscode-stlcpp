@@ -1,5 +1,7 @@
 # STLC++ for Visual Studio Code
 
+<img src="media/opencs-icon.png" alt="OpenCS bracket and cursor symbol on a pink tile" width="96" height="96">
+
 ## TODOs
 
 - Build with Nix and don't include the wasm file as a binary
