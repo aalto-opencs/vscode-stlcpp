@@ -1,0 +1,38 @@
+{
+  "baseBranch": "main",
+  "coursePaths": [
+    "materials",
+    "assignment-repository",
+    "opencs-materials",
+    "opencs-assignment-repository",
+    "test-opencs-materials",
+    "test-opencs-assignment-repository"
+  ],
+  "dependencyFiles": {
+    "package.json": [
+      ".github/workflows/publish.yml"
+    ],
+    "package-lock.json": [
+      ".github/workflows/publish.yml"
+    ]
+  },
+  "actionWorkflows": {
+    ".github/workflows/publish.yml": [
+      ".github/workflows/publish.yml"
+    ],
+    ".github/workflows/dependabot-policy.yml": [
+      ".github/workflows/publish.yml"
+    ],
+    ".github/workflows/dependabot-automerge.yml": [
+      ".github/workflows/publish.yml"
+    ]
+  },
+  "workflows": {
+    ".github/workflows/publish.yml": [
+      "^build$",
+      "^Editor tests on ubuntu-latest",
+      "^Editor tests on windows-latest",
+      "^Editor tests on macos-latest"
+    ]
+  }
+}
